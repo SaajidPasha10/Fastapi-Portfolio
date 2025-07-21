@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Blogs</title>
+  <style>
+    body { font-family: Arial; margin: 2em; }
+    .blog { border: 1px solid #ddd; padding: 1em; margin-bottom: 2em; border-radius: 8px; }
+    .section { margin-top: 1em; }
+    img, video { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <h1>All Blogs</h1>
+  {% for blog in blogs %}
+    <div class="blog" style="text-align: center;">
+      <h2>{{ blog.title }}</h2>
+      <p><strong>Created by:</strong> {{ blog.email }}</p>
+      <!-- <h3>Sections:</h3> -->
+      {% for section in blog.sections %}
+        <div class="section" style="display: flex;justify-content: center;align-items: center;">
+          {% if section.type == 'text' %}
+            <p>{{ section.content }}</p>
+          {% elif section.type == 'image' %}
+            <img src="/{{ section.file_path }}" alt="Image Section" width="600px" height="600px">
+          {% elif section.type == 'video' %}
+            <video controls>
+              <source src="/{{ section.file_path }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</body>
+</html>

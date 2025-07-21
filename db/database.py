@@ -17,5 +17,5 @@ def get_db():
     try:
         db = SESSION_MAKER()
         yield db 
-    except Exception as e:
-        raise e
+    finally:
+        db.close()

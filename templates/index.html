@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blogs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .section-box {
+      position: relative;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      background-color: #f9f9f9;
+    }
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: red;
+    }
+    .preview-media {
+      max-width: 100%;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body class="p-4">
+
+  <div class="container">
+    <h2 class="mb-4">📝 Create a Blog Post</h2>
+
+    <form id="blogForm" action="http://127.0.0.1:8000/blogs/submit/" enctype="multipart/form-data" method="post">
+      <div class="mb-3">
+        <input type="text" class="form-control" name="title" placeholder="Enter blog title" required>
+      </div>
+
+      <div class="mb-3">
+        <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <div id="sectionsContainer"></div>
+
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <button type="button" class="btn btn-outline-primary" onclick="addTextSection()">➕ Add Text</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="addImageSection()">🖼️ Add Image</button>
+        <button type="button" class="btn btn-outline-dark" onclick="addVideoSection()">🎬 Add Video</button>
+      </div>
+
+      <button type="submit" class="btn btn-success">🚀 Submit Blog</button>
+    </form>
+  </div>
+
+  <script>
+    let sectionCount = 0;
+
+    function createRemoveButton(sectionId) {
+      const btn = document.createElement('span');
+      btn.innerHTML = '&times;';
+      btn.className = 'remove-btn';
+      btn.onclick = () => document.getElementById(sectionId).remove();
+      return btn;
+    }
+
+    function addTextSection() {
+      const sectionId = `section-${sectionCount++}`;
+      const container = document.createElement('div');
+      container.className = 'section-box';
+      container.id = sectionId;
+
+      const typeInput = document.createElement('input');
+      typeInput.type = 'hidden';
+      typeInput.name = 'section_types';
+      typeInput.value = 'text';
+
+      const textarea = document.createElement('textarea');
+      textarea.name = 'contents';
+      textarea.className = 'form-control';
+      textarea.placeholder = 'Write your paragraph here...';
+      textarea.rows = 4;
+
+      container.appendChild(createRemoveButton(sectionId));
+      container.appendChild(typeInput);
+      container.appendChild(textarea);
+      document.getElementById('sectionsContainer').appendChild(container);
+    }
+
+    function addImageSection() {
+      const sectionId = `section-${sectionCount++}`;
+      const container = document.createElement('div');
+      container.className = 'section-box';
+      container.id = sectionId;
+
+      const typeInput = document.createElement('input');
+      typeInput.type = 'hidden';
+      typeInput.name = 'section_types';
+      typeInput.value = 'image';
+
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.name = 'files';
+      fileInput.accept = 'image/*';
+      fileInput.className = 'form-control';
+
+      const preview = document.createElement('img');
+      preview.className = 'preview-media';
+
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      container.appendChild(createRemoveButton(sectionId));
+      container.appendChild(typeInput);
+      container.appendChild(fileInput);
+      container.appendChild(preview);
+      document.getElementById('sectionsContainer').appendChild(container);
+    }
+
+    function addVideoSection() {
+      const sectionId = `section-${sectionCount++}`;
+      const container = document.createElement('div');
+      container.className = 'section-box';
+      container.id = sectionId;
+
+      const typeInput = document.createElement('input');
+      typeInput.type = 'hidden';
+      typeInput.name = 'section_types';
+      typeInput.value = 'video';
+
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.name = 'files';
+      fileInput.accept = 'video/*';
+      fileInput.className = 'form-control';
+
+      const preview = document.createElement('video');
+      preview.controls = true;
+      preview.className = 'preview-media';
+
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      container.appendChild(createRemoveButton(sectionId));
+      container.appendChild(typeInput);
+      container.appendChild(fileInput);
+      container.appendChild(preview);
+      document.getElementById('sectionsContainer').appendChild(container);
+    }
+  </script>
+
+</body>
+</html>
